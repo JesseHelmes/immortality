@@ -51,13 +51,13 @@ public class EventHandler {
 				event.getEntity().damageSources().outOfBorder()
 		};
 
-		boolean takeDamage = !Arrays.asList(damageSourcesToCheck).contains(event.getSource());
+		boolean takeNoDamage = !Arrays.asList(damageSourcesToCheck).contains(event.getSource());
 
-		if(takeDamage && event.getSource() == event.getEntity().damageSources().drown()) {
-			takeDamage = !Config.canDrawnUnderWater;
+		if(takeNoDamage && event.getSource() == event.getEntity().damageSources().drown()) {
+			takeNoDamage = !Config.canDrawnUnderWater;
 		}
 
-		if (takeDamage) {
+		if (takeNoDamage) {
 			event.setCanceled(true);
 		}
 	}
