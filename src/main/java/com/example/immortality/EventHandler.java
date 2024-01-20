@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 public class EventHandler {
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event) {
-		if(!Config.canDrawnUnderWater) {
+		if(Config.canDrawnUnderWater) {
 			return;
 		}
 		if (!(event.player instanceof ServerPlayer) || event.phase != TickEvent.Phase.END) {
@@ -54,7 +54,7 @@ public class EventHandler {
 		boolean takeDamage = !Arrays.asList(damageSourcesToCheck).contains(event.getSource());
 
 		if(takeDamage && event.getSource() == event.getEntity().damageSources().drown()) {
-			takeDamage = Config.canDrawnUnderWater;
+			takeDamage = !Config.canDrawnUnderWater;
 		}
 
 		if (takeDamage) {
