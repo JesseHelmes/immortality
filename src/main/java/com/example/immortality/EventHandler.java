@@ -4,29 +4,28 @@ import java.util.Arrays;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = ImmortalityMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = ImmortalityMod.MODID)
 public class EventHandler {
 	@SubscribeEvent
-	public static void onPlayerTick(PlayerTickEvent event) {
+	public static void onPlayerTick(PlayerTickEvent.Pre event) {
 		if(Config.canDrawnUnderWater) {
 			return;
 		}
-		if (!(event.player instanceof ServerPlayer) || event.phase != TickEvent.Phase.END) {
+		if (!(event.getEntity() instanceof ServerPlayer)) {
 			return;
 		}
 
-		if(!Config.player_uuids.contains(event.player.getUUID())) {
+		if(!Config.player_uuids.contains(event.getEntity().getUUID())) {
 			return;
 		}
 
-		ServerPlayer player = (ServerPlayer) event.player;
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 
 		// Check if the player is under water
 		if (player.isInWater()) {
@@ -36,7 +35,7 @@ public class EventHandler {
 	}
 
 	@SubscribeEvent
-	public static void onLivingHurt(LivingHurtEvent event) {
+	public static void onLivingHurt(LivingDamageEvent.Pre event) {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
@@ -58,7 +57,7 @@ public class EventHandler {
 		}
 
 		if (takeNoDamage) {
-			event.setCanceled(true);
+			event.setNewDamage(0);
 		}
 	}
 }
